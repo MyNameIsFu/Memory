@@ -7,8 +7,9 @@
     var gameObjects;
     
     // Difficulty Settings
-    var currentLevel = 5; // in s
-    var timeDelay = currentLevel*1000; // in ms
+    var currentLevel = 5; // in Cards
+    var timeVisible = 5; // in s
+    var timeDelay = timeVisible*1000; // in ms
     
     var randomInit = false;
     var numbersAssigned;
@@ -91,7 +92,7 @@ function createLevel(){
         console.log(i); 
         setCardValue(gameObjects[i], getRandomNumber(currentLevel), "yellow");
     }
-    TweenMax.to(secondCanvas, 5, {opacity:0});
+    TweenMax.to(secondCanvas, timeVisible, {opacity:0});
     setTimeout(function(){enableMouse()}, timeDelay);
 }
 
