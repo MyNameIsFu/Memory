@@ -5,7 +5,10 @@
     
     var wasInitialized = false;
     var gameObjects;
-    var currentLevel = 10;
+    
+    // Difficulty Settings
+    var currentLevel = 5; // in s
+    var timeDelay = currentLevel*1000; // in ms
     
     var randomInit = false;
     var numbersAssigned;
@@ -13,6 +16,10 @@
     
     var randomPrimNumber = 23;
 
+/**
+ * Initiate all required parameters and listeners
+ * @returns {undefined}
+ */
 function startGame(){
     mainCanvas = document.getElementById("mainCanvas");
     context = mainCanvas.getContext("2d");
@@ -25,8 +32,13 @@ function startGame(){
     }
 }
 
+/**
+ * 
+ * @returns {undefined}
+ */
 function restartGame(){
     console.log("restart game called");
+    throw new Error("Restart Game: not yet implemented!");
 }
 
 /**
@@ -46,13 +58,12 @@ function createLevel(){
     
     context.fillStyle = "yellow";
     
-    enableMouse();
     
-    // 1 card per level
+    // one card per level
     for(i = 0; i < currentLevel; i++){
         var tempGameObject;       // zuletzt erstellte Karte
-        
-        // Erzeuge die Karten in einer Reihe
+ 
+        // Create a Card in a row
         if((currentX + width) < mainCanvas.width){
             tempGameObject = new Card(currentX, currentY, width, "test");
             gameObjects.push(tempGameObject);
@@ -81,8 +92,14 @@ function createLevel(){
         setCardValue(gameObjects[i], getRandomNumber(currentLevel), "yellow");
     }
     TweenMax.to(secondCanvas, 5, {opacity:0});
+    setTimeout(function(){enableMouse()}, timeDelay);
 }
 
+/**
+ * Calculate the next random number to assign to a card
+ * @param {Number} pMaxNumber highest Integer to be returned
+ * @returns {Number} random Number (1,...,pMaxNumber)
+ */
 function getRandomNumber(pMaxNumber){
     if(!randomInit){
         numbersAssigned = new Array(Number);
@@ -99,8 +116,13 @@ function getRandomNumber(pMaxNumber){
     return numbersAssigned[lastNumberAssigned+1];
 }
 
+/**
+ * Check the result/score
+ * @returns {boolean} level successfully completed
+ */
 function checkResult(){
     TweenMax.to(secondCanvas, 0.25, {opacity:1});
+    var successful = true;
     for(i = 1; i < gameObjects.length; i++){
         if(gameObjects[i].value === gameObjects[i].numberGuessed){
             gameObjects[i].background = "green";
@@ -108,7 +130,9 @@ function checkResult(){
         }else{
             gameObjects[i].background = "red";
             reDrawCard(gameObjects[i]);
+            successful = false;
         }
     }
     disableMouse();
+    return successful;
 }

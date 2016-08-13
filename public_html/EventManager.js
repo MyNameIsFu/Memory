@@ -11,7 +11,7 @@ var lastCardsClicked;
 var mouseOnCard;
 var isMouseOnCard = false;
 
-var gameRunning = true;
+var gameRunning = false;
 
 function initEventmanager(pGameObjects){
     gameObjects = pGameObjects;
@@ -44,6 +44,11 @@ function checkBoundings(pEvent){
     }
 }
 
+/**
+ * Check the mouseposition for animated mouse-on-card effect
+ * @param {OnMousemove-Event} pEvent MouseMove Event
+ * @returns {undefined}
+ */
 function mouseOverCard(pEvent){
     if(gameRunning){
         var x = pEvent.clientX - mainCanvas.offsetLeft;
