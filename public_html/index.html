@@ -9,10 +9,15 @@ and open the template in the editor.
         <title>Game</title>
     </head>
     
-    <p id="eventParagraph">test</p>
+    <p id="eventParagraph"></p>
+    
+        <form id="input" action="" method="GET">
+            Level: <input TYPE="number" NAME="level" MIN="2" value="5" required><br>
+            Zeitverz&ouml;gerung: <input id="delay" TYPE="number" NAME="time" MIN="1" value="2" required><br>
+            <input TYPE="button" NAME="button" VALUE="Start Game" onclick="initStartScreen(this.form)"><br>
+        </form>
     
     <div id="div">
-        <button id="button" onclick="startGame()">Spiel Starten</button> <br>
         <canvas id="secondCanvas" width="500" height="100" style="position:absolute; background-color: rgba(0, 0, 0, 0); left:0; z-index: 2"></canvas>
         <canvas id="mainCanvas" width="500" height="100" style="position:absolute; background-color: white; left:0; z-index: 1"></canvas>
     </div>
@@ -25,6 +30,7 @@ and open the template in the editor.
     <script src="GameManager.js"></script>
     <script src="EventManager.js"></script>
     <script src="Card.js"></script>
+    <script src="StartScreen.js"></script>
     
     
 </html>

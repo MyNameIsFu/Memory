@@ -40,8 +40,6 @@ function reDrawCard(pCard){
     var x = pCard.x;
     var y = pCard.y;
     
-    console.log("reDrawCard: boolean wasClicked = " + pCard.wasClicked.toString());
-    
     context.fillStyle=pCard.background;
     context.fillRect(x, y, width, width);
     

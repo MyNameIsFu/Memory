@@ -118,7 +118,6 @@ function cardClicked(pCard){
             lastCardsClicked.pop();
             nextNumberToAssign--;
             reDrawCard(pCard);
-            console.log("Card was already clicked!");
         }
     }
 }

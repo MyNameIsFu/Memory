@@ -7,15 +7,17 @@
     var gameObjects;
     
     // Difficulty Settings
-    var currentLevel = 5; // in Cards
-    var timeVisible = 5; // in s
-    var timeDelay = timeVisible*1000; // in ms
+    var currentLevel; // in Cards
+    var timeVisible; // in s
+    var timeDelay; // in ms
     
     var randomInit = false;
     var numbersAssigned;
     var lastNumberAssigned;
     
-    var randomPrimNumber = 23;
+    
+    var randomPrimeNumbers = new Array(19, 23, 31, 37, 43, 47);
+    var currentPrimeNumber;
 
 /**
  * Initiate all required parameters and listeners
@@ -38,7 +40,6 @@ function startGame(){
  * @returns {undefined}
  */
 function restartGame(){
-    console.log("restart game called");
     throw new Error("Restart Game: not yet implemented!");
 }
 
@@ -75,7 +76,6 @@ function createLevel(){
             
             // If the canvas is too small then restart with an increased height
             if(currentY + width > mainCanvas.height){
-                console.log("Canvas Limit erreicht!");
                 secondCanvas.height += 100;
                 mainCanvas.height += 100;
                 createLevel();
@@ -89,7 +89,6 @@ function createLevel(){
     for(i = 1; i < gameObjects.length; i++){
         // assign a value to each card
         // random-algorithm := linear probing
-        console.log(i); 
         setCardValue(gameObjects[i], getRandomNumber(currentLevel), "yellow");
     }
     TweenMax.to(secondCanvas, timeVisible, {opacity:0});
@@ -107,11 +106,13 @@ function getRandomNumber(pMaxNumber){
         for(j = 0; j < currentLevel; j++){
             numbersAssigned.push(j+1);
         }
+        currentPrimeNumber = randomPrimeNumbers[Math.floor(Math.random()*randomPrimeNumbers.length)];
+        console.log("Aktuelle Primzahl: " + currentPrimeNumber);
         lastNumberAssigned = Math.floor(Math.random()*currentLevel);
         randomInit = true;
     }
     
-    lastNumberAssigned += randomPrimNumber;
+    lastNumberAssigned += currentPrimeNumber;
     lastNumberAssigned %= pMaxNumber;
     
     return numbersAssigned[lastNumberAssigned+1];
@@ -136,4 +137,13 @@ function checkResult(){
     }
     disableMouse();
     return successful;
+}
+
+function setTimeVisible(pTime){
+    timeVisible = pTime;
+    timeDelay = timeVisible*1000;
+}
+
+function setLevel(pLevel){
+    currentLevel = pLevel;
 }
