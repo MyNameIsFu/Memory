@@ -151,7 +151,7 @@ function rearrangeRandomSet(pTempSet){
 function checkResult(){
     TweenMax.to(secondCanvas, 0.25, {opacity:1});
     var successful = true;
-    for(i = 1; i < gameObjects.length; i++){
+    for(i = 0; i < gameObjects.length; i++){
         if(gameObjects[i].value === gameObjects[i].numberGuessed){
             gameObjects[i].background = "green";
             reDrawCard(gameObjects[i]);

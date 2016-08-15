@@ -16,7 +16,7 @@ var gameRunning = false;
 function initEventmanager(pGameObjects){
     gameObjects = pGameObjects;
     nextNumberToAssign = 1;
-    lastCardsClicked = new Array(Card);
+    lastCardsClicked = new Array();
     
     secondCanvas.addEventListener("click", function(evt){
         checkBoundings(evt);
@@ -31,9 +31,9 @@ function checkBoundings(pEvent){
     if(gameRunning){
         var x = pEvent.clientX - mainCanvas.offsetLeft;
         var y = pEvent.clientY - mainCanvas.offsetTop;
-        var width = gameObjects[1].width;
+        var width = gameObjects[0].width;
 
-        for (i = 1; i < gameObjects.length; i++){
+        for (i = 0; i < gameObjects.length; i++){
             var tempObj = gameObjects[i];
             if(tempObj.x < x && x < (tempObj.x + width)){
                 if(tempObj.y < y && y < (tempObj.y + width)){
@@ -58,7 +58,7 @@ function mouseOverCard(pEvent){
 
 
         if(!isMouseOnCard){
-            for (i = 1; i < gameObjects.length; i++){
+            for (i = 0; i < gameObjects.length; i++){
                 var tempObj = gameObjects[i];
                 if(tempObj.x < x && x < (tempObj.x + width)){
                     if(tempObj.y < y && y < (tempObj.y + width)){
