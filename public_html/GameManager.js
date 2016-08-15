@@ -55,8 +55,8 @@ function createLevel(){
     var width = 75;
     
     // new level, delete old array
-    gameObjects = new Array(Card);
-    numbersAssigned = new Array(Number);
+    gameObjects = new Array();
+    numbersAssigned = new Array();
     
     context.fillStyle = "yellow";
     
@@ -79,6 +79,7 @@ function createLevel(){
                 secondCanvas.height += 100;
                 mainCanvas.height += 100;
                 createLevel();
+                return;
             }else{
             tempGameObject = new Card(currentX, currentY, width, "N/A");
             gameObjects.push(tempGameObject);
@@ -86,9 +87,9 @@ function createLevel(){
             }
         }
     }
-    for(i = 1; i < gameObjects.length; i++){
+    for(i = 0; i < gameObjects.length; i++){
         // assign a value to each card
-        // random-algorithm := linear probing
+        console.log("setting Card value of Card: " + i);
         setCardValue(gameObjects[i], getRandomNumber(currentLevel), "yellow");
     }
     TweenMax.to(secondCanvas, timeVisible, {opacity:0});
@@ -102,20 +103,45 @@ function createLevel(){
  */
 function getRandomNumber(pMaxNumber){
     if(!randomInit){
-        numbersAssigned = new Array(Number);
+        var tempNumbersAssigned = new Array();
+        numbersAssigned = new Array();
         for(j = 0; j < currentLevel; j++){
-            numbersAssigned.push(j+1);
+            tempNumbersAssigned.push(j+1);
         }
+        
+        // Prime Number for generating the set
         currentPrimeNumber = randomPrimeNumbers[Math.floor(Math.random()*randomPrimeNumbers.length)];
-        console.log("Aktuelle Primzahl: " + currentPrimeNumber);
+        console.log("Primzahl zum Erstellen: " + currentPrimeNumber);
+        createRandomSet(tempNumbersAssigned);
+        
+        
         lastNumberAssigned = Math.floor(Math.random()*currentLevel);
         randomInit = true;
     }
     
-    lastNumberAssigned += currentPrimeNumber;
-    lastNumberAssigned %= pMaxNumber;
+    var lastNumberAssigned = numbersAssigned.pop();
     
-    return numbersAssigned[lastNumberAssigned+1];
+    // Prime Number for generating the set
+    currentPrimeNumber = randomPrimeNumbers[Math.floor(Math.random()*randomPrimeNumbers.length)];
+    console.log("Primzahl für rearrange: " + currentPrimeNumber);
+    rearrangeRandomSet(numbersAssigned);
+    
+    return lastNumberAssigned;
+}
+
+function createRandomSet(pTempSet){
+    for(k = 0; k < currentLevel; k++){
+        numbersAssigned.push((k*currentPrimeNumber%currentLevel)+1);
+    }
+    console.log(numbersAssigned);
+}
+
+function rearrangeRandomSet(pTempSet){
+    numbersAssigned = new Array();
+    for(l = 0; l < pTempSet.length; l++){
+        numbersAssigned.push(pTempSet[(l*currentPrimeNumber)%pTempSet.length]);
+    }
+    console.log(numbersAssigned);
 }
 
 /**
