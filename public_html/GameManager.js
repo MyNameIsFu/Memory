@@ -2,9 +2,11 @@
     var context;
     var paragraph;
     var button;
+    var score;
     
     var wasInitialized = false;
     var gameObjects;
+    var isEventListenerRunning = true;
     
     // Difficulty Settings
     var currentLevel; // in Cards
@@ -18,6 +20,9 @@
     
     var randomPrimeNumbers = new Array(19, 23, 31, 37, 43, 47);
     var currentPrimeNumber;
+    
+    var scoreMutiplier;
+    var highscore;
 
 /**
  * Initiate all required parameters and listeners
@@ -27,11 +32,13 @@ function startGame(){
     mainCanvas = document.getElementById("mainCanvas");
     context = mainCanvas.getContext("2d");
     paragraph = document.getElementById("eventParagraph");
+    score = document.getElementById("score");
     
     if(!wasInitialized){
         createLevel();
         initEventmanager(gameObjects);
         wasInitialized = true;
+        highscore = 0;
     }
 }
 
@@ -60,6 +67,9 @@ function createLevel(){
     
     context.fillStyle = "yellow";
     
+    paragraph.innerHTML = "Current Level: " + currentLevel;
+    
+    secondContext.clearRect(0, 0, secondCanvas.width, secondCanvas.height);
     
     // one card per level
     for(i = 0; i < currentLevel; i++){
@@ -89,11 +99,12 @@ function createLevel(){
     }
     for(i = 0; i < gameObjects.length; i++){
         // assign a value to each card
-        console.log("setting Card value of Card: " + i);
         setCardValue(gameObjects[i], getRandomNumber(currentLevel), "yellow");
     }
     TweenMax.to(secondCanvas, timeVisible, {opacity:0});
     setTimeout(function(){enableMouse()}, timeDelay);
+    
+    isEventListenerRunning = true;
 }
 
 /**
@@ -111,7 +122,6 @@ function getRandomNumber(pMaxNumber){
         
         // Prime Number for generating the set
         currentPrimeNumber = randomPrimeNumbers[Math.floor(Math.random()*randomPrimeNumbers.length)];
-        console.log("Primzahl zum Erstellen: " + currentPrimeNumber);
         createRandomSet(tempNumbersAssigned);
         
         
@@ -123,7 +133,6 @@ function getRandomNumber(pMaxNumber){
     
     // Prime Number for generating the set
     currentPrimeNumber = randomPrimeNumbers[Math.floor(Math.random()*randomPrimeNumbers.length)];
-    console.log("Primzahl für rearrange: " + currentPrimeNumber);
     rearrangeRandomSet(numbersAssigned);
     
     return lastNumberAssigned;
@@ -133,7 +142,6 @@ function createRandomSet(pTempSet){
     for(k = 0; k < currentLevel; k++){
         numbersAssigned.push((k*currentPrimeNumber%currentLevel)+1);
     }
-    console.log(numbersAssigned);
 }
 
 function rearrangeRandomSet(pTempSet){
@@ -141,7 +149,7 @@ function rearrangeRandomSet(pTempSet){
     for(l = 0; l < pTempSet.length; l++){
         numbersAssigned.push(pTempSet[(l*currentPrimeNumber)%pTempSet.length]);
     }
-    console.log(numbersAssigned);
+    console.log("Rearranged numbersAssigned to: " + numbersAssigned);
 }
 
 /**
@@ -151,17 +159,32 @@ function rearrangeRandomSet(pTempSet){
 function checkResult(){
     TweenMax.to(secondCanvas, 0.25, {opacity:1});
     var successful = true;
+    var correctAnswers = 0;
+    
     for(i = 0; i < gameObjects.length; i++){
         if(gameObjects[i].value === gameObjects[i].numberGuessed){
             gameObjects[i].background = "green";
             reDrawCard(gameObjects[i]);
+            correctAnswers++;
         }else{
             gameObjects[i].background = "red";
             reDrawCard(gameObjects[i]);
             successful = false;
         }
     }
+    highscore += correctAnswers * scoreMutiplier;
+    score.innerHTML = "Your Score: " + highscore;
+    
     disableMouse();
+    resetEventManager();
+    delete gameObjects;
+    delete numbersAssigned;
+    randomInit = false;
+    
+    if(correctAnswers == currentLevel){
+        setTimeout(function(){nextLevel();}, 2500);
+    }
+    
     return successful;
 }
 
@@ -172,4 +195,13 @@ function setTimeVisible(pTime){
 
 function setLevel(pLevel){
     currentLevel = pLevel;
+}
+
+function setScoreMultiplier(pValue){
+    scoreMutiplier = pValue;
+}
+
+function nextLevel(){
+    currentLevel++;
+    createLevel();
 }

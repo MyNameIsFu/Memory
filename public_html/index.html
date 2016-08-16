@@ -12,16 +12,19 @@ and open the template in the editor.
     <p id="eventParagraph"></p>
     
         <form id="input" action="" method="GET">
-            Level: <input TYPE="number" NAME="level" MIN="2" value="5" required><br>
-            Zeitverz&ouml;gerung: <input id="delay" TYPE="number" NAME="time" MIN="1" value="2" required><br>
+            <select NAME="time" size="3" width="150" required>
+                <option value="Leicht">Leicht</option>
+                <option value="Normal">Normal</option>
+                <option value="Schwierig">Schwierig</option>
+            </select> <br>
             <input TYPE="button" NAME="button" VALUE="Start Game" onclick="initStartScreen(this.form)"><br>
         </form>
     
+    <p id="score" style=""> Your Score: 0</p>
     <div id="div">  
         <canvas id="secondCanvas" width="500" height="100" style="position:absolute; background-color: rgba(0, 0, 0, 0); left:0; z-index: 2"></canvas>
         <canvas id="mainCanvas" width="500" height="100" style="position:absolute; background-color: white; left:0; z-index: 1"></canvas>
     </div>
-    
     
     
     <!-- Scripts -->

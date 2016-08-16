@@ -19,10 +19,14 @@ function initEventmanager(pGameObjects){
     lastCardsClicked = new Array();
     
     secondCanvas.addEventListener("click", function(evt){
-        checkBoundings(evt);
+        if(isEventListenerRunning){
+            checkBoundings(evt);
+        }
     });
     secondCanvas.addEventListener("mousemove", function(evt){
-        mouseOverCard(evt);
+        if(isEventListenerRunning){
+            mouseOverCard(evt);
+        }
     });
     
 }
@@ -131,4 +135,10 @@ function disableMouse(){
 
 function enableMouse(){
     gameRunning = true;
+}
+
+function resetEventManager(){
+    delete mouseOnCard;
+    isMouseOnCard = false;
+    nextNumberToAssign = 1;
 }
