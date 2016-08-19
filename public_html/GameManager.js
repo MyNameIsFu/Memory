@@ -1,9 +1,11 @@
+    // HTML components
     var mainCanvas;
     var context;
     var paragraph;
     var button;
     var score;
     
+    // Init Game
     var wasInitialized = false;
     var gameObjects;
     var isEventListenerRunning = true;
@@ -13,16 +15,17 @@
     var timeVisible; // in s
     var timeDelay; // in ms
     
+    // Random system
     var randomInit = false;
     var numbersAssigned;
     var lastNumberAssigned;
-    
-    
     var randomPrimeNumbers = new Array(19, 23, 31, 37, 43, 47);
     var currentPrimeNumber;
     
+    // Score
     var scoreMutiplier;
-    var highscore;
+    var lastScore;
+    var highScore;
 
 /**
  * Initiate all required parameters and listeners
@@ -38,7 +41,8 @@ function startGame(){
         createLevel();
         initEventmanager(gameObjects);
         wasInitialized = true;
-        highscore = 0;
+        highScore = new Array();
+        lastScore = 0;
     }
 }
 
@@ -122,7 +126,7 @@ function getRandomNumber(pMaxNumber){
         
         // Prime Number for generating the set
         currentPrimeNumber = randomPrimeNumbers[Math.floor(Math.random()*randomPrimeNumbers.length)];
-        createRandomSet(tempNumbersAssigned);
+        createRandomSet();
         
         
         lastNumberAssigned = Math.floor(Math.random()*currentLevel);
@@ -138,12 +142,21 @@ function getRandomNumber(pMaxNumber){
     return lastNumberAssigned;
 }
 
-function createRandomSet(pTempSet){
+/**
+ * Create a random set
+ * @returns {undefined}
+ */
+function createRandomSet(){
     for(k = 0; k < currentLevel; k++){
         numbersAssigned.push((k*currentPrimeNumber%currentLevel)+1);
     }
 }
 
+/**
+ * 
+ * @param {Array} pTempSet Set of Numbers(Elements) to be rearranged
+ * @returns {undefined}
+ */
 function rearrangeRandomSet(pTempSet){
     numbersAssigned = new Array();
     for(l = 0; l < pTempSet.length; l++){
@@ -172,9 +185,11 @@ function checkResult(){
             successful = false;
         }
     }
-    highscore += correctAnswers * scoreMutiplier;
-    score.innerHTML = "Your Score: " + highscore;
+    // Refresh the score
+    lastScore += correctAnswers * scoreMutiplier;
+    score.innerHTML = "Your Score: " + lastScore;
     
+    // Stop the game and proceed to the next level if all answers correct
     disableMouse();
     resetEventManager();
     delete gameObjects;
@@ -188,20 +203,49 @@ function checkResult(){
     return successful;
 }
 
+/**
+ * Set the fade timer for cards
+ * @param {Number} pTime Time in seconds
+ * @returns {undefined}
+ */
 function setTimeVisible(pTime){
     timeVisible = pTime;
     timeDelay = timeVisible*1000;
 }
 
+/**
+ * Set the level for the next launch
+ * @param {Number} pLevel The next level to start with
+ * @returns {undefined}
+ */
 function setLevel(pLevel){
     currentLevel = pLevel;
 }
 
+/**
+ * Set the score multiplier for different difficulties
+ * @param {Number} pValue Scoremultiplier = pValue * 10
+ * @returns {undefined}
+ */
 function setScoreMultiplier(pValue){
-    scoreMutiplier = pValue;
+    scoreMutiplier = pValue * 10;
 }
 
+/**
+ * Start the next Level
+ */
 function nextLevel(){
     currentLevel++;
     createLevel();
+}
+
+/**
+ * Add the current player to a list of highscores
+ * @param {type} pScore Score achieved
+ * @param {type} pName Playername
+ */
+function addHighscore(pScore, pName){
+    var nextScore = new Object(pName, pScore);
+    highScore.push(nextScore);
+    
 }

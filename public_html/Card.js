@@ -60,8 +60,9 @@ function setCardValue(pCard, pValue, pColor){
     pCard.value = pValue;
     pCard.background = pColor;
     
+    secondContext.font="26px Arial";
     secondContext.fillStyle="black";
-    secondContext.fillText(pCard.value, (pCard.x+pCard.width/2), (pCard.y+pCard.width/2));
+    secondContext.fillText(pCard.value, (pCard.x + pCard.width/2 - 6), (pCard.y + pCard.width/2 + 6));
     context.fillStyle=pColor;
     context.fillRect(pCard.x, pCard.y, pCard.width, pCard.width);
 }

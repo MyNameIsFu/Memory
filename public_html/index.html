@@ -12,7 +12,7 @@ and open the template in the editor.
     <p id="eventParagraph"></p>
     
         <form id="input" action="" method="GET">
-            <select NAME="time" size="3" width="150" required>
+            <select NAME="time" size="3" required>
                 <option value="Leicht">Leicht</option>
                 <option value="Normal">Normal</option>
                 <option value="Schwierig">Schwierig</option>
@@ -22,10 +22,16 @@ and open the template in the editor.
     
     <p id="score" style=""> Your Score: 0</p>
     <div id="div">  
-        <canvas id="secondCanvas" width="500" height="100" style="position:absolute; background-color: rgba(0, 0, 0, 0); left:0; z-index: 2"></canvas>
-        <canvas id="mainCanvas" width="500" height="100" style="position:absolute; background-color: white; left:0; z-index: 1"></canvas>
+        <canvas id="secondCanvas" width="500" height="200" style="position:absolute; background-color: rgba(0, 0, 0, 0); left:0; z-index: 2"></canvas>
+        <canvas id="mainCanvas" width="500" height="200" style="position:absolute; background-color: white; left:0; z-index: 1"></canvas>
     </div>
     
+    <table style="width:50%" id="highscore">
+        <tr>
+            <th>Playername</th>
+            <th>Score</th>
+        </tr>
+    </table>
     
     <!-- Scripts -->
     
