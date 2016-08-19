@@ -1,5 +1,6 @@
 
-
+document.getElementById("input").removeChild(document.getElementById("input").childNodes[3]);
+document.getElementById("mainCanvas").style="background-color: " + getGlobalCanvasBackground();
 function initStartScreen(pForm){
     var tempTimeDelay;
     switch(pForm.time.value){
@@ -25,7 +26,7 @@ function initStartScreen(pForm){
     console.log(timeVisible);
     
     setLevel(3);
-    document.getElementById("input").removeChild(document.getElementById("input").childNodes[3]);
-    document.getElementById("input").removeChild(document.getElementById("input").childNodes[3]);
+    
+    //document.getElementById("input").removeChild(document.getElementById("input").childNodes[3]);
     startGame();
 }
