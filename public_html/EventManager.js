@@ -2,9 +2,6 @@
  * EventManager für Mausklicks
  */
 
-var gameObjects = Array();
-var mainCanvas = document.getElementById("mainCanvas");
-
 var nextNumberToAssign;
 var lastCardsClicked;
 
@@ -13,8 +10,7 @@ var isMouseOnCard = false;
 
 var gameRunning = false;
 
-function initEventmanager(pGameObjects){
-    gameObjects = pGameObjects;
+function initEventmanager(){
     nextNumberToAssign = 1;
     lastCardsClicked = new Array();
     

@@ -1,9 +1,14 @@
     // HTML components
-    var mainCanvas;
-    var context;
+    var mainCanvas = document.getElementById("mainCanvas");
+    var secondCanvas = document.getElementById("secondCanvas");
+    var context = mainCanvas.getContext("2d");
+    var secondContext = secondCanvas.getContext("2d");
+    var globalCanvasBackground = "#aa5522";
+
     var paragraph;
     var button;
     var score;
+    var canvasStyle = "left: 0;";
     
     // Init Game
     var wasInitialized = false;
@@ -19,7 +24,7 @@
     var randomInit = false;
     var numbersAssigned;
     var lastNumberAssigned;
-    var randomPrimeNumbers = new Array(19, 23, 31, 37, 43, 47);
+    var randomPrimeNumbers = new Array(19, 23, 29, 31, 37, 43, 47);
     var currentPrimeNumber;
     
     // Score
@@ -32,18 +37,27 @@
  * @returns {undefined}
  */
 function startGame(){
-    mainCanvas = document.getElementById("mainCanvas");
-    context = mainCanvas.getContext("2d");
-    paragraph = document.getElementById("eventParagraph");
-    score = document.getElementById("score");
     
     if(!wasInitialized){
-        createLevel();
-        initEventmanager(gameObjects);
-        wasInitialized = true;
+        mainCanvas = document.getElementById("mainCanvas");
+        context = mainCanvas.getContext("2d");
+        paragraph = document.getElementById("eventParagraph");
+        score = document.getElementById("score");
+        
         highScore = new Array();
-        lastScore = 0;
+        initEventmanager();
+        wasInitialized = true;
+    }else{
+        setCanvasStyle();
     }
+    
+    // new level, delete old arrays
+    gameObjects = new Array();
+    numbersAssigned = new Array();
+    randomInit = false;
+    
+    createLevel();
+    lastScore = 0;
 }
 
 /**
@@ -52,6 +66,7 @@ function startGame(){
  */
 function restartGame(){
     throw new Error("Restart Game: not yet implemented!");
+    
 }
 
 /**
@@ -65,15 +80,11 @@ function createLevel(){
     var currentY = 20;
     var width = 75;
     
-    // new level, delete old array
-    gameObjects = new Array();
-    numbersAssigned = new Array();
-    
     context.fillStyle = "yellow";
+    paragraph.innerHTML = "Level: " + currentLevel;
     
-    paragraph.innerHTML = "Current Level: " + currentLevel;
-    
-    secondContext.clearRect(0, 0, secondCanvas.width, secondCanvas.height);
+    //secondContext.clearRect(0, 0, secondCanvas.width, secondCanvas.height);
+    setCanvasStyle();
     
     // one card per level
     for(i = 0; i < currentLevel; i++){
@@ -81,7 +92,7 @@ function createLevel(){
  
         // Create a Card in a row
         if((currentX + width) < mainCanvas.width){
-            tempGameObject = new Card(currentX, currentY, width, "test");
+            tempGameObject = new Card(currentX, currentY, width);
             gameObjects.push(tempGameObject);
             currentX += width + 10;
         } else{     // start a new row if the limit is reached
@@ -118,16 +129,11 @@ function createLevel(){
  */
 function getRandomNumber(pMaxNumber){
     if(!randomInit){
-        var tempNumbersAssigned = new Array();
         numbersAssigned = new Array();
-        for(j = 0; j < currentLevel; j++){
-            tempNumbersAssigned.push(j+1);
-        }
         
         // Prime Number for generating the set
         currentPrimeNumber = randomPrimeNumbers[Math.floor(Math.random()*randomPrimeNumbers.length)];
         createRandomSet();
-        
         
         lastNumberAssigned = Math.floor(Math.random()*currentLevel);
         randomInit = true;
@@ -147,8 +153,10 @@ function getRandomNumber(pMaxNumber){
  * @returns {undefined}
  */
 function createRandomSet(){
+    var tempRandom = Math.floor(Math.random()*currentLevel + 1);
     for(k = 0; k < currentLevel; k++){
-        numbersAssigned.push((k*currentPrimeNumber%currentLevel)+1);
+        numbersAssigned.push((tempRandom*currentPrimeNumber%currentLevel)+1);
+        tempRandom++;
     }
 }
 
@@ -236,6 +244,8 @@ function setScoreMultiplier(pValue){
  */
 function nextLevel(){
     currentLevel++;
+    gameObjects = new Array();
+    
     createLevel();
 }
 
@@ -248,4 +258,12 @@ function addHighscore(pScore, pName){
     var nextScore = new Object(pName, pScore);
     highScore.push(nextScore);
     
+}
+
+function setCanvasStyle(){
+    context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+    secondContext.clearRect(0, 0, secondCanvas.width, secondCanvas.height);
+    
+    mainCanvas.style = canvasStyle + "background-color: " + globalCanvasBackground + ";";
+    secondCanvas.style = canvasStyle + "background-color: transparent; z-index: 2;";
 }

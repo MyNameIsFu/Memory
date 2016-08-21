@@ -1,14 +1,4 @@
 /*
- * Script für die Verwaltung eines Karten-Objekts
- */
-
-var mainCanvas = document.getElementById("mainCanvas");
-var secondCanvas = document.getElementById("secondCanvas");
-
-var context = mainCanvas.getContext("2d");
-var secondContext = secondCanvas.getContext("2d");
-var globalCanvasBackground = "#aa5522";
-/*
  * Constructor for Cards
  * @param {number} x position in pixel
  * @param {number} y position in pixel
@@ -75,9 +65,5 @@ function setCardValue(pCard, pValue, pColor){
 function clearCard(pCard){
     context.fillStyle=getGlobalCanvasBackground();
     context.fillRect(pCard.x, pCard.y, pCard.width, pCard.width);
-}
-
-function getGlobalCanvasBackground(){
-    return globalCanvasBackground;
 }
 

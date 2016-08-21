@@ -1,6 +1,7 @@
 
 document.getElementById("input").removeChild(document.getElementById("input").childNodes[3]);
-document.getElementById("mainCanvas").style="background-color: " + getGlobalCanvasBackground();
+setCanvasStyle();
+
 function initStartScreen(pForm){
     var tempTimeDelay;
     switch(pForm.time.value){
@@ -22,8 +23,6 @@ function initStartScreen(pForm){
             break;
             
     }
-    
-    console.log(timeVisible);
     
     setLevel(3);
     
