@@ -63,7 +63,7 @@ function setCardValue(pCard, pValue, pColor){
  * @returns {undefined} no return
  */
 function clearCard(pCard){
-    context.fillStyle=getGlobalCanvasBackground();
+    context.fillStyle=globalCanvasBackground;
     context.fillRect(pCard.x, pCard.y, pCard.width, pCard.width);
 }
 
