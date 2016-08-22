@@ -69,6 +69,7 @@ function mouseOverCard(pEvent){
 			if(gameRunning){
 			highlightCard(false);
 			}
+			mouseOnCard = undefined;
 		}
 	}
 }
@@ -110,7 +111,7 @@ function cardClicked(pCard){
             checkResult();
         }
     }else{
-        if(pCard.value == lastCardsClicked[lastCardsClicked.length-1].value){
+        if(pCard.value === lastCardsClicked[lastCardsClicked.length-1].value){
             pCard.wasClicked = false;
             lastCardsClicked.pop();
             nextNumberToAssign--;

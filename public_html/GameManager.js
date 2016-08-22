@@ -14,6 +14,7 @@
     var wasInitialized = false;
     var gameObjects;
     var isEventListenerRunning = true;
+	var hideCanvas = true;
     
     // Difficulty Settings
     var currentLevel; // in Cards
@@ -52,6 +53,8 @@ function startGame(){
     numbersAssigned = new Array();
     randomInit = false;
     
+	hideCanvas = false;
+	toggleCanvas();
     currentScore = 0;
 	
     createLevel();
@@ -66,6 +69,9 @@ function restartGame(){
 	document.getElementById("restart").style.display = "none";
 	inputForm.name.disabled = false;
 	inputForm.button.disabled = false;
+	score.innerHTML = "";
+	hideCanvas = true;
+	toggleCanvas();
 }
 
 /**
@@ -262,6 +268,7 @@ function nextLevel(){
 
 
 function setCanvasStyle(){
+	toggleCanvas();
     context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
     secondContext.clearRect(0, 0, secondCanvas.width, secondCanvas.height);
     
@@ -337,4 +344,14 @@ function bonusPoints(pAmount){
 		bonusPoints(pAmount);
 		}
 		}, 100);
+}
+
+function toggleCanvas(){
+	if(hideCanvas){
+		TweenMax.to(mainCanvas, 0, {opacity:0});
+		TweenMax.to(secondCanvas, 0, {opacity:0});
+	}else{
+		TweenMax.to(mainCanvas, 0, {opacity:1});
+		TweenMax.to(secondCanvas, 0, {opacity:1});
+	}
 }
