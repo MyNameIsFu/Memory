@@ -5,10 +5,10 @@
     var secondContext = secondCanvas.getContext("2d");
     var globalCanvasBackground = "#aa5522";
 
-    var paragraph;
+    var paragraph = document.getElementById("eventParagraph");
     var button;
-    var score;
-    var canvasStyle = "left: 0;";
+    var score = document.getElementById("score");
+    var canvasStyle = "position:absolute; left: 50;";
     
     // Init Game
     var wasInitialized = false;
@@ -18,7 +18,8 @@
     // Difficulty Settings
     var currentLevel; // in Cards
     var timeVisible; // in s
-    var timeDelay; // in ms
+	var timePerRound = 10;
+	var timeLeft = timePerRound;
     
     // Random system
     var randomInit = false;
@@ -29,8 +30,9 @@
     
     // Score
     var scoreMutiplier;
-    var lastScore;
-    var highScore;
+    var currentScore;
+    var highScoreTable = document.getElementById("highscore");
+	var listOfHighscores = new Array();
 
 /**
  * Initiate all required parameters and listeners
@@ -39,25 +41,20 @@
 function startGame(){
     
     if(!wasInitialized){
-        mainCanvas = document.getElementById("mainCanvas");
-        context = mainCanvas.getContext("2d");
-        paragraph = document.getElementById("eventParagraph");
-        score = document.getElementById("score");
-        
-        highScore = new Array();
         initEventmanager();
         wasInitialized = true;
-    }else{
-        setCanvasStyle();
+		refreshHighscoreTable(["root", 300]);
     }
+    setCanvasStyle();
     
     // new level, delete old arrays
     gameObjects = new Array();
     numbersAssigned = new Array();
     randomInit = false;
     
+    currentScore = 0;
+	
     createLevel();
-    lastScore = 0;
 }
 
 /**
@@ -65,8 +62,10 @@ function startGame(){
  * @returns {undefined}
  */
 function restartGame(){
-    throw new Error("Restart Game: not yet implemented!");
-    
+    inputForm.style.visibility = "visible";
+	document.getElementById("restart").style.display = "none";
+	inputForm.name.disabled = false;
+	inputForm.button.disabled = false;
 }
 
 /**
@@ -79,9 +78,11 @@ function createLevel(){
     var currentX = 20;
     var currentY = 20;
     var width = 75;
+	timeLeft = timePerRound;
     
     context.fillStyle = "yellow";
     paragraph.innerHTML = "Level: " + currentLevel;
+	score.innerHTML = "Time left: " + timeLeft + " Your Score: " + currentScore;
     
     //secondContext.clearRect(0, 0, secondCanvas.width, secondCanvas.height);
     setCanvasStyle();
@@ -117,7 +118,10 @@ function createLevel(){
         setCardValue(gameObjects[i], getRandomNumber(currentLevel), "yellow");
     }
     TweenMax.to(secondCanvas, timeVisible, {opacity:0});
-    setTimeout(function(){enableMouse()}, timeDelay);
+    setTimeout(function(){
+	enableMouse();
+	timer();
+	}, timeVisible*1000);
     
     isEventListenerRunning = true;
 }
@@ -170,7 +174,6 @@ function rearrangeRandomSet(pTempSet){
     for(l = 0; l < pTempSet.length; l++){
         numbersAssigned.push(pTempSet[(l*currentPrimeNumber)%pTempSet.length]);
     }
-    console.log("Rearranged numbersAssigned to: " + numbersAssigned);
 }
 
 /**
@@ -178,7 +181,7 @@ function rearrangeRandomSet(pTempSet){
  * @returns {boolean} level successfully completed
  */
 function checkResult(){
-    TweenMax.to(secondCanvas, 0.25, {opacity:1});
+    TweenMax.to(secondCanvas, 0, {opacity:1});
     var successful = true;
     var correctAnswers = 0;
     
@@ -194,21 +197,30 @@ function checkResult(){
         }
     }
     // Refresh the score
-    lastScore += correctAnswers * scoreMutiplier;
-    score.innerHTML = "Your Score: " + lastScore;
+    currentScore += correctAnswers * scoreMutiplier;
+	score.innerHTML = "Time left: " + timeLeft + " Your Score: " + currentScore;
     
-    // Stop the game and proceed to the next level if all answers correct
+    if(successful){
+		inputForm.button.disabled = true;
+		bonusPoints(timeLeft);
+        setTimeout(
+		function(){
+			nextLevel();
+			resetEventManager();
+			}, 2500);
+    }else{
+		if(nickname.length != 0){
+		refreshHighscoreTable([nickname, currentScore]);
+		}
+		document.getElementById("restart").style.display = "inline";
+	}
+
+	// Stop the game and proceed to the next level if all answers correct
     disableMouse();
     resetEventManager();
     delete gameObjects;
     delete numbersAssigned;
     randomInit = false;
-    
-    if(correctAnswers == currentLevel){
-        setTimeout(function(){nextLevel();}, 2500);
-    }
-    
-    return successful;
 }
 
 /**
@@ -218,7 +230,6 @@ function checkResult(){
  */
 function setTimeVisible(pTime){
     timeVisible = pTime;
-    timeDelay = timeVisible*1000;
 }
 
 /**
@@ -249,16 +260,6 @@ function nextLevel(){
     createLevel();
 }
 
-/**
- * Add the current player to a list of highscores
- * @param {type} pScore Score achieved
- * @param {type} pName Playername
- */
-function addHighscore(pScore, pName){
-    var nextScore = new Object(pName, pScore);
-    highScore.push(nextScore);
-    
-}
 
 function setCanvasStyle(){
     context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
@@ -266,4 +267,74 @@ function setCanvasStyle(){
     
     mainCanvas.style = canvasStyle + "background-color: " + globalCanvasBackground + ";";
     secondCanvas.style = canvasStyle + "background-color: transparent; z-index: 2;";
+	
+	TweenMax.to(secondCanvas, 0, {opacity:1});
+}
+
+/**
+*	Refresh the Highscore by deleting all rows, adding the new score, sorting and rearranging the Highscore Table
+*	@param	{Object} Object of Type {Name, Score}
+**/
+
+function refreshHighscoreTable(pNewScore){
+	var lengthOfHighscores = highScoreTable.rows.length;
+	// delete all Rows (except of Header)
+	for(i = 1; i < lengthOfHighscores; i++){
+		highScoreTable.deleteRow(1);
+	}
+	
+	listOfHighscores.push(pNewScore);
+	listOfHighscores.sort(sortScores);
+	for(j = 0; j < listOfHighscores.length; j++){
+		addRowToHighscore(listOfHighscores[j], listOfHighscores.length-j);
+	}
+}
+
+// How should the array be sorted (First Element the lowest score)
+function sortScores(a, b){
+	if(a[1] < b[1]){
+		return -1;
+	}
+	if(a[1] > b[1]){
+		return 1;
+	}
+	return 0;
+}
+
+function addRowToHighscore(pNewRow, pPlace){
+	var row = highScoreTable.insertRow(1);
+	var first = row.insertCell(0);
+	var second = row.insertCell(1);
+	first.innerHTML = pPlace + ". " + pNewRow[0];
+	second.innerHTML = pNewRow[1];
+}
+
+function timer(){
+	score.innerHTML = "Time left: " + timeLeft + " Your Score: " + currentScore;
+	if(timeLeft <= 0 && gameRunning){
+		checkResult();
+		return;
+	}
+	
+	if(gameRunning){
+		setTimeout(function(){
+		if(gameRunning){
+		timeLeft--;
+		console.log("time remaining: " + timeLeft);
+		timer();
+		}}, 1000);
+		return;
+	}
+}
+
+function bonusPoints(pAmount){
+		pAmount--;
+		console.log("pAmount: " + pAmount);
+		currentScore += 10;
+		score.innerHTML = "Time left: " + timeLeft + " Your Score: " + currentScore;
+		setTimeout(function(){
+		if(pAmount > 0){
+		bonusPoints(pAmount);
+		}
+		}, 100);
 }

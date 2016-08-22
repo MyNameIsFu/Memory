@@ -15,33 +15,28 @@ function initEventmanager(){
     lastCardsClicked = new Array();
     
     secondCanvas.addEventListener("click", function(evt){
-        if(isEventListenerRunning){
+        if(gameRunning){
             checkBoundings(evt);
-        }
+			}
     });
     secondCanvas.addEventListener("mousemove", function(evt){
-        if(isEventListenerRunning){
             mouseOverCard(evt);
-        }
     });
-    
 }
 
 function checkBoundings(pEvent){
-    if(gameRunning){
-        var x = pEvent.clientX - mainCanvas.offsetLeft;
-        var y = pEvent.clientY - mainCanvas.offsetTop;
-        var width = gameObjects[0].width;
+	var x = pEvent.clientX - mainCanvas.offsetLeft;
+	var y = pEvent.clientY - mainCanvas.offsetTop;
+	var width = gameObjects[0].width;
 
-        for (i = 0; i < gameObjects.length; i++){
-            var tempObj = gameObjects[i];
-            if(tempObj.x < x && x < (tempObj.x + width)){
-                if(tempObj.y < y && y < (tempObj.y + width)){
-                    cardClicked(tempObj);
-                }
-            }
-        }
-    }
+	for (i = 0; i < gameObjects.length; i++){
+		var tempObj = gameObjects[i];
+		if(tempObj.x < x && x < (tempObj.x + width)){
+			if(tempObj.y < y && y < (tempObj.y + width)){
+				cardClicked(tempObj);
+			}
+		}
+	}
 }
 
 /**
@@ -50,32 +45,32 @@ function checkBoundings(pEvent){
  * @returns {undefined}
  */
 function mouseOverCard(pEvent){
-    if(gameRunning){
-        var x = pEvent.clientX - mainCanvas.offsetLeft;
-        var y = pEvent.clientY - mainCanvas.offsetTop;
-        var width = gameObjects[1].width;
+	var x = pEvent.clientX - mainCanvas.offsetLeft;
+	var y = pEvent.clientY - mainCanvas.offsetTop;
+	var width = gameObjects[1].width;
 
-
-
-        if(!isMouseOnCard){
-            for (i = 0; i < gameObjects.length; i++){
-                var tempObj = gameObjects[i];
-                if(tempObj.x < x && x < (tempObj.x + width)){
-                    if(tempObj.y < y && y < (tempObj.y + width)){
-                        isMouseOnCard = true;
-                        mouseOnCard = gameObjects[i];
-                        highlightCard(true);
-                        break;
-                    }
-                }
-            }
-        }else{
-            if(mouseOnCard.x > x || x > (mouseOnCard.x + width) || mouseOnCard.y > y || y > (mouseOnCard.y + width)){
-                isMouseOnCard = false;
-                highlightCard(false);
-            }
-        }
-    }
+	if(!isMouseOnCard){
+		for (i = 0; i < gameObjects.length; i++){
+			var tempObj = gameObjects[i];
+			if(tempObj.x < x && x < (tempObj.x + width)){
+				if(tempObj.y < y && y < (tempObj.y + width)){
+					isMouseOnCard = true;
+					mouseOnCard = gameObjects[i];
+					if(gameRunning){
+						highlightCard(true);
+					}
+					break;
+				}
+			}
+		}
+	}else{
+		if(mouseOnCard.x > x || x > (mouseOnCard.x + width) || mouseOnCard.y > y || y > (mouseOnCard.y + width)){
+			isMouseOnCard = false;
+			if(gameRunning){
+			highlightCard(false);
+			}
+		}
+	}
 }
 
 /**
@@ -84,19 +79,21 @@ function mouseOverCard(pEvent){
  * @returns {undefined}
  */
 function highlightCard(highlight){
-    if(highlight){
-        mouseOnCard.width += 6;
-        mouseOnCard.x -= 3;
-        mouseOnCard.y -= 3;
-        reDrawCard(gameObjects[i]);
-    }else{
-        clearCard(mouseOnCard);
-        mouseOnCard.width -= 6;
-        mouseOnCard.x += 3;
-        mouseOnCard.y += 3;
-        reDrawCard(mouseOnCard);
-        mouseOnCard = null;
-    }
+	if(mouseOnCard != undefined){
+		if(highlight){
+			mouseOnCard.width += 6;
+			mouseOnCard.x -= 3;
+			mouseOnCard.y -= 3;
+			reDrawCard(mouseOnCard);
+		}else{
+			clearCard(mouseOnCard);
+			mouseOnCard.width -= 6;
+			mouseOnCard.x += 3;
+			mouseOnCard.y += 3;
+			reDrawCard(mouseOnCard);
+			mouseOnCard = null;
+		}
+	}
 }
 
 function cardClicked(pCard){
@@ -131,10 +128,11 @@ function disableMouse(){
 
 function enableMouse(){
     gameRunning = true;
+	highlightCard(true);
 }
 
 function resetEventManager(){
-    delete mouseOnCard;
+    mouseOnCard = undefined;
     isMouseOnCard = false;
     nextNumberToAssign = 1;
 }

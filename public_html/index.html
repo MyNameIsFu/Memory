@@ -13,22 +13,30 @@ and open the template in the editor.
     <header>
         <h1>Memory</h1>
     </header>
-    <p id="eventParagraph"></p>
     
     <form id="input" action="" method="GET">
+		Nickname:
+		<input type="text" name="name" required> <br>
+		Level: 
+		<input type="range" name="level" min="2" max="10" value="3" required> <br>
+		Schwierigkeit: 
         <select NAME="time" required>
             <option value="Leicht">Leicht</option>
             <option value="Normal">Normal</option>
             <option value="Schwierig">Schwierig</option>
-        </select> <br>
+        </select>
         <input TYPE="button" NAME="button" VALUE="Spiel starten" onclick="initStartScreen(this.form)"><br>
     </form>
+	
+	
+    <p id="eventParagraph"></p>
     
-    <p id="score" style=""> Your Score: 0</p>
+    <p id="score" style=""></p>
     
     <h2>
-        <canvas id="secondCanvas" width="500" height="200" style="left: 0; background-color: rgba(0, 0, 0, 0); z-index: 2"></canvas>
-        <canvas id="mainCanvas" width="500" height="200" style="left: 0; z-index: 1"></canvas>
+        <canvas id="secondCanvas" width="500" height="200" style="left: 50; background-color: rgba(0, 0, 0, 0); z-index: 2"></canvas>
+        <canvas id="mainCanvas" width="500" height="200" style="left: 50; background-color: #aa5522; z-index: 1"></canvas>
+		<button id="restart" hidden value="test" onclick="restartGame()" style="position:fixed; left: 10%; top: 100px;">Spiel Neustarten</button>
     </h2>
         
         <table style="width:50%; left:50%" id="highscore">

@@ -33,9 +33,18 @@ function reDrawCard(pCard){
     context.fillStyle=pCard.background;
     context.fillRect(x, y, width, width);
     
-    if(pCard.wasClicked){
-        context.fillStyle="black";
-        context.fillText(pCard.numberGuessed, x, (y+10));
+    if(pCard.wasClicked){	
+		context.font="16px Arial";
+        context.fillStyle="#115566";
+        context.fillText(pCard.numberGuessed, (x + 1), (y+16));
+		
+		context.beginPath();
+		context.lineWidth = "2";
+		context.strokeStyle="#115566";
+		context.moveTo(x+12, y);
+		context.lineTo(x+12, y+20);
+		context.lineTo(x, y+20);
+		context.stroke();
     }
 }
 

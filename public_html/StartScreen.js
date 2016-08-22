@@ -1,9 +1,12 @@
-
-document.getElementById("input").removeChild(document.getElementById("input").childNodes[3]);
 setCanvasStyle();
+
+var inputForm;
+var nickname;
 
 function initStartScreen(pForm){
     var tempTimeDelay;
+	inputForm = pForm;
+	nickname = pForm.name.value;
     switch(pForm.time.value){
         case "Leicht":
             setTimeVisible(4);
@@ -24,8 +27,11 @@ function initStartScreen(pForm){
             
     }
     
-    setLevel(3);
-    
+    setLevel(inputForm.level.value);
+    inputForm.name.disabled = true;
+	inputForm.style.visibility = "hidden";
+	
+	
     //document.getElementById("input").removeChild(document.getElementById("input").childNodes[3]);
     startGame();
 }

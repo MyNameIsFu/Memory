@@ -9,13 +9,21 @@ h1 {
 }
 
 form {
-     margin-left: 25%;
+     margin-left: 10%;
 }
 
 table{
     margin-left: 50%;
+	text-align: center;
+	border: 2px solid #000000;
+}
+
+tr{
+	border: 1px solid #000000;
+	background-color: #559999;
 }
 
 canvas{
     position:absolute; 
+	left: 50px;
 }
